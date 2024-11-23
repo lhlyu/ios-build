@@ -24,6 +24,8 @@ jobs:
 
       - name: 安装依赖
         run: |
+          pwd
+          ls -l
           pod repo update
           pod install
 
