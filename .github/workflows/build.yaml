@@ -20,7 +20,7 @@ jobs:
       - name: 设置短的SHA
         run: echo "CI_COMMIT_SHORT_SHA=${GITHUB_SHA::8}" >> $GITHUB_ENV
 
-      - name: 拉取代码 && 进入到项目目录
+      - name: 拉取代码
         run: git clone -b ${{ secrets.REPO_BRANCH }} ${{ secrets.REPO_URL }}
 
       - name: 安装工具
