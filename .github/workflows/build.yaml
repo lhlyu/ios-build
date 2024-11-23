@@ -10,7 +10,7 @@ env:
 
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
       - name: 打印信息
         run: |
@@ -27,10 +27,26 @@ jobs:
         run: |
           curl https://gosspublic.alicdn.com/ossutil/install.sh | sudo bash
 
+      - name: Cache CocoaPods Specs
+        uses: actions/cache@v3
+        with:
+          path: ~/.cocoapods
+          key: cocoapods-${{ runner.os }}-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            cocoapods-${{ runner.os }}-
+
+      - name: Cache Pods
+        uses: actions/cache@v3
+        with:
+          path: Pods
+          key: pods-${{ runner.os }}-${{ hashFiles('**/Podfile.lock') }}
+          restore-keys: |
+            pods-${{ runner.os }}-
+
       - name: 安装依赖
         run: |
           cd ${{ secrets.REPO_NAME }}
-          pod repo update
+#          pod repo update
           pod install
 
       - name: 构建
