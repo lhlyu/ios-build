@@ -27,18 +27,6 @@ jobs:
         run: |
           curl https://gosspublic.alicdn.com/ossutil/install.sh | sudo bash
 
-      - name: Cache CocoaPods Specs
-        uses: actions/cache@v3
-        with:
-          path: ~/.cocoapods
-          key: cocoapods-${{ runner.os }}-${{ hashFiles('**/Podfile.lock') }}
-
-      - name: Cache Pods
-        uses: actions/cache@v3
-        with:
-          path: Pods
-          key: pods-${{ runner.os }}-${{ hashFiles('**/Podfile.lock') }}
-
       - name: 安装依赖
         run: |
           cd ${{ secrets.REPO_NAME }}
