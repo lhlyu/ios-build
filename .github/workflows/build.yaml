@@ -1,0 +1,26 @@
+name: IOS构建
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  publish:
+    runs-on: macos-latest
+    steps:
+      - name: 设置短的SHA
+        run: echo "COMMIT_SHORT_SHA=${GITHUB_SHA::8}" >> $GITHUB_ENV
+      #- name: 拉取代码 && 进入到项目目录
+      #  run: git clone -b ${{ secrets.REPO_BRANCH }} ${{ secrets.REPO_URL }} && cd ${{ secrets.REPO_NAME }}
+
+      - name: 安装工具
+        run: |
+          echo $COMMIT_SHORT_SHA
+          curl https://gosspublic.alicdn.com/ossutil/install.sh | sudo bash
+          ossutil
+          pod --version
+          xcodebuild -version
+          envsubst --version
+          
+
