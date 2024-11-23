@@ -12,46 +12,51 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-      - name: 设置短的SHA
-        run: echo "CI_COMMIT_SHORT_SHA=${GITHUB_SHA::8}" >> $GITHUB_ENV
-
-      - name: 拉取代码 && 进入到项目目录
-        run: git clone -b ${{ secrets.REPO_BRANCH }} ${{ secrets.REPO_URL }}
-
-      - name: 安装工具
+      - name: 打印信息
         run: |
-          curl https://gosspublic.alicdn.com/ossutil/install.sh | sudo bash
+          pod --version
+          xcodebuild -version
 
-      - name: 安装依赖
-        run: |
-          cd ${{ secrets.REPO_NAME }}
-          pod repo update
-          pod install
-
-      - name: 构建
-        run: |
-          cd ${{ secrets.REPO_NAME }}
-          xcodebuild -scheme ${{ secrets.WORKSPACE_NAME }} -workspace ${{ secrets.WORKSPACE_NAME }}.xcworkspace -configuration Debug DEVELOPMENT_TEAM="${{ secrets.DEVELOPMENT_TEAM }}" clean archive -archivePath ./build/${{ secrets.WORKSPACE_NAME }}.xcarchive -quiet
-          xcodebuild -exportArchive -archivePath ./build/${{ secrets.WORKSPACE_NAME }}.xcarchive -exportPath ./build/ -exportOptionsPlist ./ci/ExportOptions.plist -allowProvisioningUpdates
-
-      - name: 上传资源
-        run: |
-          cd ${{ secrets.REPO_NAME }}
-          cd build
-          echo "${{ secrets.OSSUTIL_CONFIG }}" > config
-          envsubst < $DownloadPlist > $CI_COMMIT_SHORT_SHA.plist
-          ossutil --config-file ./config cp -f $CI_COMMIT_SHORT_SHA.plist ${{ secrets.OSS_URL }}
-          mv -f ${{ secrets.APP_NAME }}.ipa $CI_COMMIT_SHORT_SHA.ipa
-          ossutil --config-file ./config cp -f $CI_COMMIT_SHORT_SHA.ipa ${{ secrets.OSS_URL }}
-
-      - name: 安装Python环境
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
-
-      - name: 通知
-        run: |
-          cd ${{ secrets.REPO_NAME }}
-          envsubst < ./ci/noti.py | python3 -
+#      - name: 设置短的SHA
+#        run: echo "CI_COMMIT_SHORT_SHA=${GITHUB_SHA::8}" >> $GITHUB_ENV
+#
+#      - name: 拉取代码 && 进入到项目目录
+#        run: git clone -b ${{ secrets.REPO_BRANCH }} ${{ secrets.REPO_URL }}
+#
+#      - name: 安装工具
+#        run: |
+#          curl https://gosspublic.alicdn.com/ossutil/install.sh | sudo bash
+#
+#      - name: 安装依赖
+#        run: |
+#          cd ${{ secrets.REPO_NAME }}
+#          pod repo update
+#          pod install
+#
+#      - name: 构建
+#        run: |
+#          cd ${{ secrets.REPO_NAME }}
+#          xcodebuild -scheme ${{ secrets.WORKSPACE_NAME }} -workspace ${{ secrets.WORKSPACE_NAME }}.xcworkspace -configuration Debug DEVELOPMENT_TEAM="${{ secrets.DEVELOPMENT_TEAM }}" clean archive -archivePath ./build/${{ secrets.WORKSPACE_NAME }}.xcarchive -quiet
+#          xcodebuild -exportArchive -archivePath ./build/${{ secrets.WORKSPACE_NAME }}.xcarchive -exportPath ./build/ -exportOptionsPlist ./ci/ExportOptions.plist -allowProvisioningUpdates
+#
+#      - name: 上传资源
+#        run: |
+#          cd ${{ secrets.REPO_NAME }}
+#          cd build
+#          echo "${{ secrets.OSSUTIL_CONFIG }}" > config
+#          envsubst < $DownloadPlist > $CI_COMMIT_SHORT_SHA.plist
+#          ossutil --config-file ./config cp -f $CI_COMMIT_SHORT_SHA.plist ${{ secrets.OSS_URL }}
+#          mv -f ${{ secrets.APP_NAME }}.ipa $CI_COMMIT_SHORT_SHA.ipa
+#          ossutil --config-file ./config cp -f $CI_COMMIT_SHORT_SHA.ipa ${{ secrets.OSS_URL }}
+#
+#      - name: 安装Python环境
+#        uses: actions/setup-python@v4
+#        with:
+#          python-version: 3.11
+#
+#      - name: 通知
+#        run: |
+#          cd ${{ secrets.REPO_NAME }}
+#          envsubst < ./ci/noti.py | python3 -
           
 

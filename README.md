@@ -8,10 +8,10 @@ REPO_NAME: 库名字, 例如: ios
 REPO_URL: 库地址，例子: https://<username>:<仓库访问令牌>@git.xxx.com/xx/ios.git
 REPO_BRANCH: 指定库分支，例子: develop
 WORKSPACE_NAME: ios项目工作空间，例子: qq
-APP_NAME: 企鹅
+APP_NAME: app名字，例如: 企鹅
 DEVELOPMENT_TEAM: 开发团队ID，例子: SDF33I32
 OSSUTIL_CONFIG: 阿里云OSS配置，用来上传到OSS
-OSS_URL: 上传到OSS的位置
+OSS_URL: 上传到OSS的位置，例子: oss://resource-xxx-com/
 ```
 
 ## 步骤
