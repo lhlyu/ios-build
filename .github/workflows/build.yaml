@@ -16,7 +16,7 @@ jobs:
         run: echo "CI_COMMIT_SHORT_SHA=${GITHUB_SHA::8}" >> $GITHUB_ENV
 
       - name: 拉取代码 && 进入到项目目录
-        run: git clone -b ${{ secrets.REPO_BRANCH }} ${{ secrets.REPO_URL }} && cd ${{ secrets.REPO_NAME }}
+        run: git clone -b ${{ secrets.REPO_BRANCH }} ${{ secrets.REPO_URL }}
 
       - name: 安装工具
         run: |
@@ -24,18 +24,19 @@ jobs:
 
       - name: 安装依赖
         run: |
-          pwd
-          ls -l
+          cd ${{ secrets.REPO_NAME }}
           pod repo update
           pod install
 
       - name: 构建
         run: |
+          cd ${{ secrets.REPO_NAME }}
           xcodebuild -scheme ${{ secrets.WORKSPACE_NAME }} -workspace ${{ secrets.WORKSPACE_NAME }}.xcworkspace -configuration Debug DEVELOPMENT_TEAM="${{ secrets.DEVELOPMENT_TEAM }}" clean archive -archivePath ./build/${{ secrets.WORKSPACE_NAME }}.xcarchive -quiet
           xcodebuild -exportArchive -archivePath ./build/${{ secrets.WORKSPACE_NAME }}.xcarchive -exportPath ./build/ -exportOptionsPlist ./ci/ExportOptions.plist -allowProvisioningUpdates
 
       - name: 上传资源
         run: |
+          cd ${{ secrets.REPO_NAME }}
           cd build
           echo "${{ secrets.OSSUTIL_CONFIG }}" > config
           envsubst < $DownloadPlist > $CI_COMMIT_SHORT_SHA.plist
@@ -50,6 +51,7 @@ jobs:
 
       - name: 通知
         run: |
-          envsubst < ../ci/noti.py | python3 -
+          cd ${{ secrets.REPO_NAME }}
+          envsubst < ./ci/noti.py | python3 -
           
 
