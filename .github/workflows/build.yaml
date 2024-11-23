@@ -35,9 +35,9 @@ jobs:
       - name: 构建
         run: |
           cd ${{ secrets.REPO_NAME }}
-          echo "${{ secrets.EXPORT_OPTIONS }}" > ./ci/ExportOptions.plist
           xcodebuild -scheme ${{ secrets.WORKSPACE_NAME }} -workspace ${{ secrets.WORKSPACE_NAME }}.xcworkspace -configuration Debug SKIP_INSTALL=YES DEVELOPMENT_TEAM="${{ secrets.DEVELOPMENT_TEAM }}" clean archive -archivePath ./build/${{ secrets.WORKSPACE_NAME }}.xcarchive -quiet
           echo '归档'
+          ls -l ./build
           xcodebuild -exportArchive -archivePath ./build/${{ secrets.WORKSPACE_NAME }}.xcarchive -exportPath ./build/ -exportOptionsPlist ./ci/ExportOptions.plist -allowProvisioningUpdates
 
       - name: 上传资源
