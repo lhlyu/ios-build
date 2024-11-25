@@ -47,7 +47,7 @@ jobs:
           cd ${{ secrets.REPO_NAME }}
           xcodebuild -list
           echo '归档'
-          xcodebuild -scheme ${{ secrets.WORKSPACE_NAME }} -workspace ${{ secrets.WORKSPACE_NAME }}.xcworkspace -configuration Debug DEVELOPMENT_TEAM="${{ secrets.DEVELOPMENT_TEAM }}" clean archive -archivePath ./build/${{ secrets.WORKSPACE_NAME }}.xcarchive -quiet
+          xcodebuild -scheme ${{ secrets.WORKSPACE_NAME }} -workspace ${{ secrets.WORKSPACE_NAME }}.xcworkspace -configuration Debug DEVELOPMENT_TEAM="${{ secrets.DEVELOPMENT_TEAM }}" clean archive -archivePath ./build/${{ secrets.WORKSPACE_NAME }}.xcarchive -verbose
           echo '导出'
           ls -l ./build
           xcodebuild -exportArchive -archivePath ./build/${{ secrets.WORKSPACE_NAME }}.xcarchive -exportPath ./build/ -exportOptionsPlist ./ci/ExportOptions.plist -allowProvisioningUpdates
