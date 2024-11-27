@@ -42,34 +42,42 @@ jobs:
           cd ${{ secrets.REPO_NAME }}
           pod install
 
-      - name: 构建
+      - name: 测试构建
         run: |
           cd ${{ secrets.REPO_NAME }}
+          xcodebuild clean build -project ${{ secrets.WORKSPACE_NAME }}.xcodeproj -scheme ${{ secrets.WORKSPACE_NAME }} -destination 'platform=iOS Simulator,name=iPhone 12'
+          xcodebuild test -project ${{ secrets.WORKSPACE_NAME }}.xcodeproj -scheme ${{ secrets.WORKSPACE_NAME }} -destination 'platform=iOS Simulator,name=iPhone 12'
           ls -l
-          echo '归档'
-          xcodebuild -scheme ${{ secrets.WORKSPACE_NAME }} -workspace ${{ secrets.WORKSPACE_NAME }}.xcworkspace -configuration Debug DEVELOPMENT_TEAM="${{ secrets.DEVELOPMENT_TEAM }}" clean archive -archivePath ./build/${{ secrets.WORKSPACE_NAME }}.xcarchive -quiet
-          echo '导出'
-          ls -l ./build
-          xcodebuild -exportArchive -archivePath ./build/${{ secrets.WORKSPACE_NAME }}.xcarchive -exportPath ./build/ -exportOptionsPlist ./ci/ExportOptions.plist -allowProvisioningUpdates
+          ls -l path/to/test/results
 
-      - name: 上传资源
-        run: |
-          cd ${{ secrets.REPO_NAME }}
-          cd build
-          echo "${{ secrets.OSSUTIL_CONFIG }}" > config
-          envsubst < $DownloadPlist > $CI_COMMIT_SHORT_SHA.plist
-          ossutil --config-file ./config cp -f $CI_COMMIT_SHORT_SHA.plist ${{ secrets.OSS_URL }}
-          mv -f ${{ secrets.APP_NAME }}.ipa $CI_COMMIT_SHORT_SHA.ipa
-          ossutil --config-file ./config cp -f $CI_COMMIT_SHORT_SHA.ipa ${{ secrets.OSS_URL }}
+#      - name: 构建
+#        run: |
+#          cd ${{ secrets.REPO_NAME }}
+#          ls -l
+#          echo '归档'
+#          xcodebuild -scheme ${{ secrets.WORKSPACE_NAME }} -workspace ${{ secrets.WORKSPACE_NAME }}.xcworkspace -configuration Debug DEVELOPMENT_TEAM="${{ secrets.DEVELOPMENT_TEAM }}" clean archive -archivePath ./build/${{ secrets.WORKSPACE_NAME }}.xcarchive -quiet
+#          echo '导出'
+#          ls -l ./build
+#          xcodebuild -exportArchive -archivePath ./build/${{ secrets.WORKSPACE_NAME }}.xcarchive -exportPath ./build/ -exportOptionsPlist ./ci/ExportOptions.plist -allowProvisioningUpdates
 
-      - name: 安装Python环境
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
-
-      - name: 通知
-        run: |
-          cd ${{ secrets.REPO_NAME }}
-          envsubst < ./ci/noti.py | python3 -
+#      - name: 上传资源
+#        run: |
+#          cd ${{ secrets.REPO_NAME }}
+#          cd build
+#          echo "${{ secrets.OSSUTIL_CONFIG }}" > config
+#          envsubst < $DownloadPlist > $CI_COMMIT_SHORT_SHA.plist
+#          ossutil --config-file ./config cp -f $CI_COMMIT_SHORT_SHA.plist ${{ secrets.OSS_URL }}
+#          mv -f ${{ secrets.APP_NAME }}.ipa $CI_COMMIT_SHORT_SHA.ipa
+#          ossutil --config-file ./config cp -f $CI_COMMIT_SHORT_SHA.ipa ${{ secrets.OSS_URL }}
+#
+#      - name: 安装Python环境
+#        uses: actions/setup-python@v4
+#        with:
+#          python-version: 3.11
+#
+#      - name: 通知
+#        run: |
+#          cd ${{ secrets.REPO_NAME }}
+#          envsubst < ./ci/noti.py | python3 -
           
 
